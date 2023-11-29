@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { TasksService } from '../tasks.service';
-import { TaskModel } from '../task.model';
+import { TasksService } from './tasks.service';
+import { TaskModel } from './task.model';
 
 @Controller('tasks')
 export class TasksController {

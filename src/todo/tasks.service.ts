@@ -38,11 +38,12 @@ export class TasksService {
   }
 
   deleteTask(id:number): TaskModel{
-    let taskIndex = this._tasks.findIndex(task => task.id === id);
-    if(taskIndex = -1) {
+    let taskIndex = this._tasks.findIndex(task => task.id == id);
+    if(taskIndex === -1) {
       throw new NotFoundException(`Task with id ${id} not found`);
     }
     const deletedTask = this._tasks.splice(taskIndex, 1)[0];
+    console.log('After deletion:', this._tasks);
     return deletedTask;
   }
 }
