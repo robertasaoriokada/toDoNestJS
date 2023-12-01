@@ -7,9 +7,9 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class TasksService {
   _tasks: TaskEntity[] = [
-    {id: uuidv4(), title:"My dear cat", description: "Feed the cat"},
-    {id: uuidv4(), title:"Home", description: "Wash the dishes"},
-    {id: uuidv4(), title:"Sister", description: 'Take Helena to robotic class'}
+    {id: uuidv4(), title:"My dear cat", description: "Feed the cat", is_complete: false},
+    {id: uuidv4(), title:"Home", description: "Wash the dishes", is_complete: false},
+    {id: uuidv4(), title:"Sister", description: 'Take Helena to robotic class', is_complete: false}
   ]
 
   findAllTasks(): TaskEntity[]{
@@ -17,20 +17,26 @@ export class TasksService {
   }
 
   findTaskById(id: string): TaskEntity{
-    return this._tasks.find(task => task.id == id); // clean code?
+    const task = this._tasks.find(task => task.id == id);
+    if(!task){
+      throw new NotFoundException(`Task with id ${id} not found`)
+    }
+    return task;
   }
 
+  findTaskByTitle(title: string): TaskEntity[]{
+    const task = this._tasks.filter(task => task.title.toLowerCase().includes(title.toLowerCase()));
+    if(task.length == 0){
+      throw new NotFoundException(`Task with title ${title} not found`)
+    }
+    return task;
+  }
+
+
   createTask(t: CreateTaskDTO): TaskEntity {
-    let newTask = {id: uuidv4(), title: t.title, description: t.description, is_completed: false}
+    let newTask: TaskEntity = {id: uuidv4(), title: t.title, description: t.description, is_complete: false}
     this._tasks.push(newTask);
     return newTask;
-    // let taskExists = this._tasks.filter(task => task.id == t.id);
-    // if(taskExists.length == 0){
-    //   this._tasks.push(t);
-    //   return t; // clean code?
-    // }
-    //throw new Error("Already exist a task with this id");
-    
   }
 
   updateTask(id: string, task: UpdateTaskDTO): TaskEntity{

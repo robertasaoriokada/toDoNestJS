@@ -2,7 +2,7 @@ export class TaskEntity {
   id: string;
   title: string;
   description: string;
-  is_complete?: boolean;
+  is_complete: boolean = false;
 }
 
 // ENTITY PORRAAAAA

@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TaskEntity } from './task.entity';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
+import { IsOptional } from 'class-validator';
 
 @Controller('tasks')
 export class TasksController {
@@ -13,13 +14,19 @@ export class TasksController {
     return this.taskService.findAllTasks();
   }
 
-  @Get(':taskId')
-  getTaskById(@Param('taskId') id: string) {
-    let task = this.taskService.findTaskById(id);
-    if(!task){
-      throw new NotFoundException(`Task with id ${id} not found`)
+  @Get("/search")
+  getTaskByIdOrTitle(@Query('taskId') id?: string, @Query('title') title?: string) {
+    switch(true){
+      case id !== undefined:
+        const taskById = this.taskService.findTaskById(id);
+        return taskById;
+      case !!title:
+        const taskByTitle = this.taskService.findTaskByTitle(title);
+        return taskByTitle;
+      default:
+        return this.taskService.findAllTasks();
     }
-    return task;
+    
   }
 
   @Post()
