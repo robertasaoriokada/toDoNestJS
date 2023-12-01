@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { TaskModel } from './task.model';
+import { TaskEntity } from './task.entity';
+import { CreateTaskDTO } from './dto/create-task.dto';
+import { UpdateTaskDTO } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -12,7 +14,7 @@ export class TasksController {
   }
 
   @Get(':taskId')
-  getTaskById(@Param('taskId') id: number) {
+  getTaskById(@Param('taskId') id: string) {
     let task = this.taskService.findTaskById(id);
     if(!task){
       throw new NotFoundException(`Task with id ${id} not found`)
@@ -21,18 +23,18 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body() t: TaskModel){
-    this.taskService.createTask(t);
-    return t;
+  createTask(@Body() task: CreateTaskDTO){
+    this.taskService.createTask(task);
+    return task;
   }
 
   @Put(':taskId')
-  updateTask(@Param('taskId') id: number, @Body() t: TaskModel){
-    this.taskService.updateTask(id, t);
+  updateTask(@Param('taskId') id: string, @Body() task: UpdateTaskDTO){
+    this.taskService.updateTask(id, task); // clean code?
   }
 
   @Delete(':taskId')
-  deleteTask(@Param('taskId') id: number){
+  deleteTask(@Param('taskId') id: string){
     this.taskService.deleteTask(id);
   }
 }

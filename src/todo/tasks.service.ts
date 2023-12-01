@@ -1,43 +1,53 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TaskModel } from './task.model';
+import { TaskEntity} from './task.entity';
+import { UpdateTaskDTO } from './dto/update-task.dto';
+import { CreateTaskDTO } from './dto/create-task.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TasksService {
-  _tasks: TaskModel[] = [
-    {id: 1, description: "Feed the cat"},
-    {id: 2, description: "Wash the dishes"},
-    {id: 3, description: 'Take Helena to robotic class'}
+  _tasks: TaskEntity[] = [
+    {id: uuidv4(), title:"My dear cat", description: "Feed the cat"},
+    {id: uuidv4(), title:"Home", description: "Wash the dishes"},
+    {id: uuidv4(), title:"Sister", description: 'Take Helena to robotic class'}
   ]
 
-  findAllTasks(): TaskModel[]{
+  findAllTasks(): TaskEntity[]{
     return this._tasks;
   }
 
-  findTaskById(id: number): TaskModel{
-    return this._tasks.find(t => t.id == id);
+  findTaskById(id: string): TaskEntity{
+    return this._tasks.find(task => task.id == id); // clean code?
   }
 
-  createTask(t: TaskModel): TaskModel{
-    let taskExists = this._tasks.filter(task => task.id == t.id);
-    if(taskExists.length == 0){
-      this._tasks.push(t);
-      return t;
-    }
+  createTask(t: CreateTaskDTO): TaskEntity {
+    let newTask = {id: uuidv4(), title: t.title, description: t.description, is_completed: false}
+    this._tasks.push(newTask);
+    return newTask;
+    // let taskExists = this._tasks.filter(task => task.id == t.id);
+    // if(taskExists.length == 0){
+    //   this._tasks.push(t);
+    //   return t; // clean code?
+    // }
     //throw new Error("Already exist a task with this id");
     
   }
 
-  updateTask(id: number, t: TaskModel): TaskModel{
-    let taskExists = this._tasks.filter(task => task.id == id);
-    if(taskExists.length == 0) {
+  updateTask(id: string, task: UpdateTaskDTO): TaskEntity{
+    let taskExists = this._tasks.find(task => task.id == id); // procura sobre array.find()
+    if(!taskExists) {
       throw new NotFoundException(`Task with id ${id} not found`);
     }
-    taskExists[0].description = t.description;
-    taskExists[0].is_complete = t.is_complete;
-    return taskExists[0];
+    if (task.description !== undefined) {
+      taskExists.description = task.description;
+    }
+    if (task.is_complete !== undefined) {
+      taskExists.is_complete = task.is_complete;
+    }
+    return taskExists;
   }
 
-  deleteTask(id:number): TaskModel{
+  deleteTask(id:string): TaskEntity{
     let taskIndex = this._tasks.findIndex(task => task.id == id);
     if(taskIndex === -1) {
       throw new NotFoundException(`Task with id ${id} not found`);
