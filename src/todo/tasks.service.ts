@@ -34,8 +34,7 @@ export class TasksService {
 
 
   createTask(t: CreateTaskDTO): TaskEntity {
-    let newTask = new TaskEntity();
-    newTask = {id: uuidv4(), title: t.title, description: t.description, is_complete: false} satisfies TaskEntity;
+    let newTask = new TaskEntity(uuidv4(), t.title, t.description, false);
     this._tasks.push(newTask);
     return newTask;
   }

@@ -1,6 +1,3 @@
 export class TaskEntity {
-  id: string;
-  title: string;
-  description: string;
-  is_complete: boolean = false;
+  constructor(public id:string, public title:string, public description:string, public is_complete:boolean) {}
 }

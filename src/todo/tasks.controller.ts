@@ -8,11 +8,6 @@ import { IsOptional } from 'class-validator';
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly taskService: TasksService) {}
-    
-  @Get()
-  getTasks(){
-    return this.taskService.findAllTasks();
-  }
 
   @Get("/search")
   getTaskByIdOrTitle(@Query('taskId') id?: string, @Query('title') title?: string) {
