@@ -34,7 +34,8 @@ export class TasksService {
 
 
   createTask(t: CreateTaskDTO): TaskEntity {
-    let newTask: TaskEntity = {id: uuidv4(), title: t.title, description: t.description, is_complete: false}
+    let newTask = new TaskEntity();
+    newTask = {id: uuidv4(), title: t.title, description: t.description, is_complete: false} satisfies TaskEntity;
     this._tasks.push(newTask);
     return newTask;
   }
@@ -55,9 +56,7 @@ export class TasksService {
 
   deleteTask(id:string): TaskEntity{
     let taskIndex = this._tasks.findIndex(task => task.id == id);
-    if(taskIndex === -1) {
-      throw new NotFoundException(`Task with id ${id} not found`);
-    }
+    if(taskIndex === -1) throw new NotFoundException(`Task with id ${id} not found`);
     const deletedTask = this._tasks.splice(taskIndex, 1)[0];
     console.log('After deletion:', this._tasks);
     return deletedTask;

@@ -4,5 +4,3 @@ export class TaskEntity {
   description: string;
   is_complete: boolean = false;
 }
-
-// ENTITY PORRAAAAA
